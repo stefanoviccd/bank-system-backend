@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">
+            com.mysql.jdbc.Driver
+        </property>
+        <property name="hibernate.connection.url">
+            jdbc:mysql://localhost:3306/bank-system
+        </property>
+        <property name="hibernate.connection.username">
+            root
+        </property>
+        <property name="hibernate.connection.password">
+            root
+        </property>
+        <property name="hibernate.connection.autocommit">false</property>
+        <property name="hibernate.connection.provider_disables_autocommit">true</property>
+
+        <property name="show_sql">true</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.DerbyTenSevenDialect</property>
+
+        <mapping class="rs.ac.bg.fon.banksystem.model.LegalEntity" />
+        <mapping class="rs.ac.bg.fon.banksystem.model.Street" />
+        <mapping class="rs.ac.bg.fon.banksystem.model.Township" />
+        <mapping class="rs.ac.bg.fon.banksystem.model.Place" />
+        <mapping class="rs.ac.bg.fon.banksystem.model.CreditBureauReport" />
+        <mapping class="rs.ac.bg.fon.banksystem.model.Loan" />
+
+    </session-factory>
+</hibernate-configuration>
+
