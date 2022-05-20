@@ -15,11 +15,12 @@ public class CreditBureauReportRepositoryImpl implements CreditBureauReportRepos
         for(int i=0; i<report.getLoans().size(); i++){
             em.persist(report.getLoans().get(i));
         }
+
         try {
             em.persist(report);
         }
         catch (Exception e){
-            System.out.println("NIIJE MOGUCE SACUVATI IZVESTAJ.");
+            System.out.println("NIJE MOGUCE SACUVATI IZVESTAJ.");
            // em.getTransaction().rollback();
             e.printStackTrace();
         }
@@ -49,7 +50,7 @@ public class CreditBureauReportRepositoryImpl implements CreditBureauReportRepos
         EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
         String searchingParameter="%"+value+"%";
 
-       return em.createQuery("select m from CreditBureauReport m where m.bankName LIKE :value or m.reportNum LIKE :value").setParameter("value", searchingParameter)
+       return em.createQuery("select m from CreditBureauReport m where m.bankName LIKE :value or m.reportNum LIKE :value or m.legalEntity.name LIKE :value").setParameter("value", searchingParameter)
                 .getResultList();
 
     }

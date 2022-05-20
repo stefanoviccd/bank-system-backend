@@ -5,6 +5,7 @@ import rs.ac.bg.fon.banksystem.exception.ValidationException;
 import rs.ac.bg.fon.banksystem.model.CreditBureauReport;
 import rs.ac.bg.fon.banksystem.repository.CreditBureauReportRepository;
 import rs.ac.bg.fon.banksystem.repository.CreditBureauReportRepositoryImpl;
+import rs.ac.bg.fon.banksystem.repository.LegalEntityRepositoryImpl;
 import rs.ac.bg.fon.banksystem.validator.CreditBureauReportValidator;
 import rs.ac.bg.fon.banksystem.validator.impl.CreditBureauAddValidator;
 import rs.ac.bg.fon.banksystem.validator.impl.CreditBureauUpdateValidator;
@@ -16,11 +17,13 @@ public class CreditBureauService {
     private final CreditBureauReportValidator addReportValidator;
     private final CreditBureauReportValidator updateReportValidator;
     private final CreditBureauReportRepository repo;
+    private final LegalEntityRepositoryImpl legalEntityRepository;
 
     public CreditBureauService() {
         addReportValidator = new CreditBureauAddValidator();
         repo = new CreditBureauReportRepositoryImpl();
         updateReportValidator=new CreditBureauUpdateValidator();
+        legalEntityRepository=new LegalEntityRepositoryImpl();
     }
 
     public void addBureauReport(CreditBureauReport report) throws ValidationException {
@@ -34,6 +37,7 @@ public class CreditBureauService {
         em.getTransaction().begin();
         try {
             addReportValidator.validate(report);
+            report.setLegalEntity(legalEntityRepository.getById(report.getLegalEntity().getId()));
             repo.addCreditBureauReport(report);
             em.getTransaction().commit();
 
@@ -132,6 +136,7 @@ public class CreditBureauService {
 
             CreditBureauReport dbReport = repo.getReportById(id);
             em.getTransaction().commit();
+            System.out.println(dbReport);
             return dbReport;
 
         } catch (

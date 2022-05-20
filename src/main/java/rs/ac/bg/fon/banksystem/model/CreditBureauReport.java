@@ -42,6 +42,10 @@ public class CreditBureauReport {
     @JoinColumn(name = "cb_report_id",
             referencedColumnName ="id" )
     private List<Loan> loans;
+    @ManyToOne
+    @JoinColumn(name = "legal_entity_id",
+    referencedColumnName = "id")
+    private LegalEntity legalEntity;
 
 
 }
