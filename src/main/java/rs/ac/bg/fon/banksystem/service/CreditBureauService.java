@@ -25,9 +25,8 @@ public class CreditBureauService {
 
     public CreditBureauService() {
         addReportValidator = new CreditBureauAddValidator();
-        // repo = new CreditBureauReportRepositoryImpl();
         updateReportValidator = new CreditBureauUpdateValidator();
-        //legalEntityRepository=new LegalEntityRepositoryImpl();
+
     }
 
     public void addBureauReport(CreditBureauReport report) throws ValidationException {

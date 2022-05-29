@@ -5,11 +5,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import rs.ac.bg.fon.banksystem.communication.Response;
 import rs.ac.bg.fon.banksystem.model.LegalEntity;
 import rs.ac.bg.fon.banksystem.service.LegalEntityService;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -22,50 +25,78 @@ public class LegalEntityController {
 
     }
     @GetMapping
-    public List<LegalEntity> getAllEmployees() {
-        return legalEntityService.findAll();
+    public ResponseEntity<Response> getAllEmployees() {
+        Response response = new Response();
+        try {
+            List<LegalEntity> entities = legalEntityService.findAll();
+            response.setResponseData(entities);
+            response.setResponseException(null);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+
+        } catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+        }
     }
 
     @CrossOrigin
     @PostMapping("/new")
-    public ResponseEntity<LegalEntity> createLegalEntity(@RequestBody LegalEntity entity) throws Exception {
-
+    public ResponseEntity<Response> createLegalEntity(@RequestBody LegalEntity entity) throws Exception {
+        Response response = new Response();
         try {
             LegalEntity save = legalEntityService.save(entity);
-            return ResponseEntity.status(HttpStatus.OK).body(save);
+            response.setResponseData(save);
+            response.setResponseException(null);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
 
 
         } catch (Exception ex) {
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.add("errorMessage", ex.getMessage());
-            return ResponseEntity.status(HttpStatus.CONFLICT).headers(responseHeaders).body(null);
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
         }
-
-
     }
 
     // build get employee by id REST API
     @GetMapping("{id}")
-    public ResponseEntity<LegalEntity> getEntityById(@PathVariable Long id) {
-        LegalEntity entity = legalEntityService.getById(id);
-        HttpHeaders responseHeaders = new HttpHeaders();
+    public ResponseEntity<Response> getEntityById(@PathVariable Long id) {
+        Response response = new Response();
+        try {
+            LegalEntity entity = legalEntityService.getById(id);
+            response.setResponseData(entity);
+            response.setResponseException(null);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
 
-        return ResponseEntity.ok().headers(responseHeaders).body(entity);
+
+        } catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+        }
+
+
     }
 
     // build update employee REST API
 
     @PutMapping("{id}")
-    public ResponseEntity<LegalEntity> updateEmployee(@PathVariable long id, @RequestBody LegalEntity entityDetails) {
+    public ResponseEntity<Response> updateEmployee(@PathVariable long id, @RequestBody LegalEntity entityDetails) {
+        Response response=new Response();
         try {
             entityDetails.setId(id);
-            legalEntityService.update(entityDetails);
-            HttpHeaders responseHeaders = new HttpHeaders();
-            return ResponseEntity.ok().headers(responseHeaders).body(entityDetails);
+            LegalEntity updated=legalEntityService.update(entityDetails);
+            response.setResponseData(updated);
+            return ResponseEntity.ok().body(response);
         } catch (Exception e) {
-            e.printStackTrace();
+            response.setResponseException(e);
+            response.setResponseData(null);
+            return ResponseEntity.ok().body(response);
         }
-        return null;
 
     }
 
@@ -73,15 +104,17 @@ public class LegalEntityController {
 
     @DeleteMapping("{id}")
     @CrossOrigin
-    public ResponseEntity<HttpStatus> deleteEmployee(@PathVariable Long id) {
+    public ResponseEntity<Response> deleteEmployee(@PathVariable Long id) {
+        Response response=new Response();
         try {
             LegalEntity entity = legalEntityService.getById(id);
             legalEntityService.delete(entity);
-            HttpHeaders responseHeaders = new HttpHeaders();
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok().body(response);
+
         } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
+            response.setResponseException(e);
+            response.setResponseData(null);
+            return ResponseEntity.ok().body(response);
         }
 
 
@@ -89,15 +122,28 @@ public class LegalEntityController {
 
     @GetMapping("/search/{value}")
     @CrossOrigin
-    public ResponseEntity<List<LegalEntity>> getLegalEntitiesByValue(@PathVariable(name = "value") String searchValue) {
+    public ResponseEntity<Response> getLegalEntitiesByValue(@PathVariable(name = "value") String searchValue) {
+        Response response = new Response();
         try {
             List<LegalEntity> dbEntities = legalEntityService.getByValue(searchValue);
-            HttpHeaders responseHeaders = new HttpHeaders();
-            return ResponseEntity.ok().headers(responseHeaders).body(dbEntities);
-        } catch (Exception e) {
-            return ResponseEntity.status(404).body(new ArrayList<>());
+            response.setResponseData(dbEntities);
+            response.setResponseException(null);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+
+        } catch (Exception ex) {
+            response.setResponseData(new ArrayList() {
+            });
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
         }
 
+
+
+
     }
+
+
 
 }

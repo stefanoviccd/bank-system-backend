@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import rs.ac.bg.fon.banksystem.communication.Response;
 import rs.ac.bg.fon.banksystem.model.CreditBureauReport;
 import rs.ac.bg.fon.banksystem.model.LegalEntity;
 import rs.ac.bg.fon.banksystem.service.CreditBureauService;
@@ -18,20 +19,25 @@ import java.util.List;
 public class CreditBureauController {
     @Autowired
     private CreditBureauService creditBureauService;
-    public CreditBureauController(){
+
+    public CreditBureauController() {
 
     }
+
     @CrossOrigin
     @PostMapping()
-    public ResponseEntity<HttpStatus> addBureauReport(@RequestBody CreditBureauReport report) {
+    public ResponseEntity<Response> addBureauReport(@RequestBody CreditBureauReport report) {
+        Response response = new Response();
         try {
             creditBureauService.addBureauReport(report);
-            return new ResponseEntity<>(HttpStatus.OK);
+            response.setResponseException(null);
+            response.setResponseData(null);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
 
         } catch (Exception ex) {
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.add("errorMessage", ex.getMessage());
-            return ResponseEntity.status(HttpStatus.CONFLICT).headers(responseHeaders).body(null);
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
 
         }
 
@@ -40,71 +46,79 @@ public class CreditBureauController {
 
     @CrossOrigin
     @GetMapping()
-    public ResponseEntity<List<CreditBureauReport>> getAllReports() throws Exception {
+    public ResponseEntity<Response> getAllReports() throws Exception {
+        Response response = new Response();
         try {
-            List<CreditBureauReport> reports= creditBureauService.getAllReports();
-            return ResponseEntity.ok().body(reports);
+            List<CreditBureauReport> reports = creditBureauService.getAllReports();
+            response.setResponseData(reports);
+            return ResponseEntity.ok().body(response);
 
         } catch (Exception ex) {
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.add("errorMessage", ex.getMessage());
-            return ResponseEntity.status(HttpStatus.CONFLICT).headers(responseHeaders).body(new ArrayList<>());
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
     }
 
 
     @CrossOrigin
     @DeleteMapping("{id}")
-    public ResponseEntity<HttpStatus> deleteReport(@PathVariable(name = "id")   Long reportId) throws Exception {
+    public ResponseEntity<Response> deleteReport(@PathVariable(name = "id") Long reportId) throws Exception {
+        Response response = new Response();
         try {
             creditBureauService.deleteReport(reportId);
-            return ResponseEntity.ok().body(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok().body(response);
 
         } catch (Exception ex) {
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.add("errorMessage", ex.getMessage());
-            return ResponseEntity.status(HttpStatus.CONFLICT).headers(responseHeaders).build();
-
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
     }
 
     @GetMapping("/search/{value}")
     @CrossOrigin
-    public ResponseEntity<List<CreditBureauReport>> getReportsByValue(@PathVariable(name = "value") String searchValue){
+    public ResponseEntity<Response> getReportsByValue(@PathVariable(name = "value") String searchValue) {
+        Response response = new Response();
         try {
-            List<CreditBureauReport> dbReports=creditBureauService.getByValue(searchValue);
-            HttpHeaders responseHeaders = new HttpHeaders();
-            return  ResponseEntity.ok().headers(responseHeaders).body(dbReports);
+            List<CreditBureauReport> dbReports = creditBureauService.getByValue(searchValue);
+            response.setResponseData(dbReports);
+            return ResponseEntity.ok().body(response);
         } catch (Exception e) {
-            return ResponseEntity.status(404).body(new ArrayList<>());
+            response.setResponseData(new ArrayList<>());
+            response.setResponseException(e);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<CreditBureauReport> getEntityById(@PathVariable Long id) {
-        try{
+    public ResponseEntity<Response> getEntityById(@PathVariable Long id) {
+        Response response = new Response();
+        try {
             CreditBureauReport report = creditBureauService.getById(id);
-            HttpHeaders responseHeaders = new HttpHeaders();
-            return ResponseEntity.ok().headers(responseHeaders).body(report);
-        }
-        catch (Exception e){
-            return ResponseEntity.status(404).body(null);
+            response.setResponseData(report);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            response.setResponseData(null);
+            response.setResponseException(e);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<CreditBureauReport> updateCreditBureauReport(@PathVariable long id, @RequestBody CreditBureauReport reportDetails) {
+    public ResponseEntity<Response> updateCreditBureauReport(@PathVariable long id, @RequestBody CreditBureauReport reportDetails) {
+        Response response = new Response();
         try {
             reportDetails.setId(id);
             creditBureauService.update(reportDetails);
-            HttpHeaders responseHeaders = new HttpHeaders();
-            return ResponseEntity.ok().headers(responseHeaders).body(reportDetails);
+            response.setResponseData(reportDetails);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
-            HttpHeaders responseHeaders = new HttpHeaders();
-            return ResponseEntity.status(HttpStatus.CONFLICT).headers(responseHeaders).build();
-
+            response.setResponseData(null);
+            response.setResponseException(e);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 
 
