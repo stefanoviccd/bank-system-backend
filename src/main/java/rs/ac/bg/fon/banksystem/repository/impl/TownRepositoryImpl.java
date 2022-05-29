@@ -1,17 +1,19 @@
-package rs.ac.bg.fon.banksystem.repository;
+package rs.ac.bg.fon.banksystem.repository.impl;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.springframework.stereotype.Repository;
 import rs.ac.bg.fon.banksystem.dbConnection.EntityManagerProvider;
 import rs.ac.bg.fon.banksystem.model.Place;
 import rs.ac.bg.fon.banksystem.model.Street;
 import rs.ac.bg.fon.banksystem.model.Township;
+import rs.ac.bg.fon.banksystem.repository.TownshipRepository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-
-public class TownRepositoryImpl {
+@Repository
+public class TownRepositoryImpl implements TownshipRepository {
     public Township findByZipCode(Long zipCode){
         SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
         Session session = sessionFactory.openSession();

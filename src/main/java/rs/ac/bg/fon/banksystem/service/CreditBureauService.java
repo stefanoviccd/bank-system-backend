@@ -1,11 +1,12 @@
 package rs.ac.bg.fon.banksystem.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.banksystem.dbConnection.EntityManagerProvider;
 import rs.ac.bg.fon.banksystem.exception.ValidationException;
 import rs.ac.bg.fon.banksystem.model.CreditBureauReport;
 import rs.ac.bg.fon.banksystem.repository.CreditBureauReportRepository;
-import rs.ac.bg.fon.banksystem.repository.CreditBureauReportRepositoryImpl;
-import rs.ac.bg.fon.banksystem.repository.LegalEntityRepositoryImpl;
+import rs.ac.bg.fon.banksystem.repository.LegalEntityRepository;
 import rs.ac.bg.fon.banksystem.validator.CreditBureauReportValidator;
 import rs.ac.bg.fon.banksystem.validator.impl.CreditBureauAddValidator;
 import rs.ac.bg.fon.banksystem.validator.impl.CreditBureauUpdateValidator;
@@ -13,21 +14,24 @@ import rs.ac.bg.fon.banksystem.validator.impl.CreditBureauUpdateValidator;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+@Service
 public class CreditBureauService {
     private final CreditBureauReportValidator addReportValidator;
     private final CreditBureauReportValidator updateReportValidator;
-    private final CreditBureauReportRepository repo;
-    private final LegalEntityRepositoryImpl legalEntityRepository;
+    @Autowired
+    private CreditBureauReportRepository repo;
+    @Autowired
+    private LegalEntityRepository legalEntityRepository;
 
     public CreditBureauService() {
         addReportValidator = new CreditBureauAddValidator();
-        repo = new CreditBureauReportRepositoryImpl();
-        updateReportValidator=new CreditBureauUpdateValidator();
-        legalEntityRepository=new LegalEntityRepositoryImpl();
+        // repo = new CreditBureauReportRepositoryImpl();
+        updateReportValidator = new CreditBureauUpdateValidator();
+        //legalEntityRepository=new LegalEntityRepositoryImpl();
     }
 
     public void addBureauReport(CreditBureauReport report) throws ValidationException {
-        if(report==null){
+        if (report == null) {
             throw new ValidationException("Report to be saved is null!!");
         }
         if (report.getReportNum() == null) {
@@ -41,15 +45,14 @@ public class CreditBureauService {
             repo.addCreditBureauReport(report);
             em.getTransaction().commit();
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (em.getTransaction().isActive())
                 em.getTransaction().rollback();
             throw e;
 
         } finally {
-            if(em.isOpen())
-            em.close();
+            if (em.isOpen())
+                em.close();
             EntityManagerProvider.getInstance().closeSession();
 
         }
@@ -68,7 +71,7 @@ public class CreditBureauService {
             return dbReports;
 
         } catch (Exception e) {
-            if(em.getTransaction().isActive())
+            if (em.getTransaction().isActive())
                 em.getTransaction().rollback();
             e.printStackTrace();
             throw e;
@@ -141,8 +144,8 @@ public class CreditBureauService {
 
         } catch (
                 Exception e) {
-       //    if(em.getTransaction().isActive())
-                em.getTransaction().rollback();
+            //    if(em.getTransaction().isActive())
+            em.getTransaction().rollback();
             throw e;
         } finally {
             em.close();

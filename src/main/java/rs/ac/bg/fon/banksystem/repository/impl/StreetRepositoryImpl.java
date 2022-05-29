@@ -1,16 +1,18 @@
-package rs.ac.bg.fon.banksystem.repository;
+package rs.ac.bg.fon.banksystem.repository.impl;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.springframework.stereotype.Repository;
 import rs.ac.bg.fon.banksystem.dbConnection.EntityManagerProvider;
 import rs.ac.bg.fon.banksystem.model.LegalEntity;
 import rs.ac.bg.fon.banksystem.model.Street;
+import rs.ac.bg.fon.banksystem.repository.StreetRepository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-
-public class StreetRepositoryImpl {
+@Repository
+public class StreetRepositoryImpl implements StreetRepository {
     public List<Street> findByTownshipId(Long townShipId) {
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
 

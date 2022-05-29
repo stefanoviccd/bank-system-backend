@@ -1,4 +1,4 @@
-package rs.ac.bg.fon.banksystem.repository;
+package rs.ac.bg.fon.banksystem.repository.impl;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -9,12 +9,13 @@ import rs.ac.bg.fon.banksystem.exception.ResourceNotFoundException;
 import rs.ac.bg.fon.banksystem.model.LegalEntity;
 import rs.ac.bg.fon.banksystem.model.Place;
 import rs.ac.bg.fon.banksystem.model.Township;
+import rs.ac.bg.fon.banksystem.repository.LegalEntityRepository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
 @Repository
-public class LegalEntityRepositoryImpl {
+public class LegalEntityRepositoryImpl implements LegalEntityRepository {
 
     public LegalEntity save(LegalEntity legalEntity) {
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
@@ -86,7 +87,7 @@ public class LegalEntityRepositoryImpl {
     public void delete(LegalEntity entity) {
         EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
         LegalEntity dbEntity=em.find(LegalEntity.class, entity.getId());
-
+        if(dbEntity!=null)
         em.remove(dbEntity);
 
 

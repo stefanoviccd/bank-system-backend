@@ -1,12 +1,5 @@
 package rs.ac.bg.fon.banksystem;
 
-import org.springframework.boot.web.reactive.context.StandardReactiveWebEnvironment;
-import rs.ac.bg.fon.banksystem.model.LegalEntity;
-import rs.ac.bg.fon.banksystem.model.Place;
-import rs.ac.bg.fon.banksystem.model.Street;
-import rs.ac.bg.fon.banksystem.model.Township;
-import rs.ac.bg.fon.banksystem.repository.LegalEntityRepository;
-import rs.ac.bg.fon.banksystem.repository.LegalEntityRepositoryImpl;
 import rs.ac.bg.fon.banksystem.service.LegalEntityService;
 
 

@@ -1,13 +1,15 @@
-package rs.ac.bg.fon.banksystem.repository;
+package rs.ac.bg.fon.banksystem.repository.impl;
 
+import org.springframework.stereotype.Repository;
 import rs.ac.bg.fon.banksystem.dbConnection.EntityManagerProvider;
 import rs.ac.bg.fon.banksystem.model.*;
+import rs.ac.bg.fon.banksystem.repository.CreditBureauReportRepository;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
+@Repository
 public class CreditBureauReportRepositoryImpl implements CreditBureauReportRepository {
     @Override
     public void addCreditBureauReport(CreditBureauReport report) {
@@ -88,6 +90,18 @@ public class CreditBureauReportRepositoryImpl implements CreditBureauReportRepos
                 .getResultList();
         return  dbReports.isEmpty() ? null : dbReports.get(0);
 
+
+    }
+
+    @Override
+    public void deleteByEntityId(Long id) {
+        System.out.println("ENTITY ID: "+id);
+        EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
+       List<CreditBureauReport> entityReports=em.createQuery("SELECT m FROM CreditBureauReport m WHERE m.legalEntity.id= :id").setParameter("id", id).getResultList();
+       if(entityReports!=null && !entityReports.isEmpty())
+       for(int j=0;j<entityReports.size(); j++){
+           em.remove(entityReports.get(j));
+       }
 
     }
 }

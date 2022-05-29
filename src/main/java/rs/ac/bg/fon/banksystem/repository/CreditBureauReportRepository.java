@@ -17,4 +17,6 @@ public interface CreditBureauReportRepository {
     void update(CreditBureauReport report);
 
     CreditBureauReport findByReportNumber(String reportNum);
+
+    void deleteByEntityId(Long id);
 }

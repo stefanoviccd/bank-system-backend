@@ -2,7 +2,7 @@ package rs.ac.bg.fon.banksystem.validator.impl;
 
 import rs.ac.bg.fon.banksystem.exception.ValidationException;
 import rs.ac.bg.fon.banksystem.model.LegalEntity;
-import rs.ac.bg.fon.banksystem.repository.LegalEntityRepositoryImpl;
+import rs.ac.bg.fon.banksystem.repository.impl.LegalEntityRepositoryImpl;
 import rs.ac.bg.fon.banksystem.validator.LegalEntityValidator;
 
 public class LegalEntityUpdateValidator implements LegalEntityValidator {

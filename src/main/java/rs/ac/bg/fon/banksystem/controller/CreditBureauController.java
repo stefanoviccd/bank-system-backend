@@ -1,5 +1,6 @@
 package rs.ac.bg.fon.banksystem.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,10 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("/api/v1/bureauReports")
 public class CreditBureauController {
+    @Autowired
     private CreditBureauService creditBureauService;
     public CreditBureauController(){
-        creditBureauService=new CreditBureauService();
+
     }
     @CrossOrigin
     @PostMapping()
@@ -29,7 +31,6 @@ public class CreditBureauController {
         } catch (Exception ex) {
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.add("errorMessage", ex.getMessage());
-            System.out.println(ex.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).headers(responseHeaders).body(null);
 
         }
@@ -45,8 +46,9 @@ public class CreditBureauController {
             return ResponseEntity.ok().body(reports);
 
         } catch (Exception ex) {
-            ex.printStackTrace();
-            throw ex;
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.add("errorMessage", ex.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).headers(responseHeaders).body(new ArrayList<>());
         }
     }
 
@@ -59,15 +61,16 @@ public class CreditBureauController {
             return ResponseEntity.ok().body(HttpStatus.NO_CONTENT);
 
         } catch (Exception ex) {
-            ex.printStackTrace();
-            throw ex;
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.add("errorMessage", ex.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).headers(responseHeaders).build();
+
         }
     }
 
     @GetMapping("/search/{value}")
     @CrossOrigin
     public ResponseEntity<List<CreditBureauReport>> getReportsByValue(@PathVariable(name = "value") String searchValue){
-        System.out.println("POZVANA METODA");
         try {
             List<CreditBureauReport> dbReports=creditBureauService.getByValue(searchValue);
             HttpHeaders responseHeaders = new HttpHeaders();
@@ -80,12 +83,15 @@ public class CreditBureauController {
 
     @GetMapping("{id}")
     public ResponseEntity<CreditBureauReport> getEntityById(@PathVariable Long id) {
-        CreditBureauReport report = creditBureauService.getById(id);
-        System.out.println("***************************VRACENI REZULTAT MEDOTE GET BY ID **************************");
-        System.out.println(report);
-        HttpHeaders responseHeaders = new HttpHeaders();
+        try{
+            CreditBureauReport report = creditBureauService.getById(id);
+            HttpHeaders responseHeaders = new HttpHeaders();
+            return ResponseEntity.ok().headers(responseHeaders).body(report);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(404).body(null);
+        }
 
-        return ResponseEntity.ok().headers(responseHeaders).body(report);
     }
 
     @PutMapping("{id}")
@@ -96,9 +102,11 @@ public class CreditBureauController {
             HttpHeaders responseHeaders = new HttpHeaders();
             return ResponseEntity.ok().headers(responseHeaders).body(reportDetails);
         } catch (Exception e) {
-            e.printStackTrace();
+            HttpHeaders responseHeaders = new HttpHeaders();
+            return ResponseEntity.status(HttpStatus.CONFLICT).headers(responseHeaders).build();
+
         }
-        return null;
+
 
     }
 

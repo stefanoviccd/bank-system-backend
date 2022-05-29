@@ -1,10 +1,8 @@
 package rs.ac.bg.fon.banksystem.validator.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import rs.ac.bg.fon.banksystem.exception.ValidationException;
 import rs.ac.bg.fon.banksystem.model.LegalEntity;
-import rs.ac.bg.fon.banksystem.repository.LegalEntityRepository;
-import rs.ac.bg.fon.banksystem.repository.LegalEntityRepositoryImpl;
+import rs.ac.bg.fon.banksystem.repository.impl.LegalEntityRepositoryImpl;
 import rs.ac.bg.fon.banksystem.validator.LegalEntityValidator;
 public class LegalEntityAddValidator implements LegalEntityValidator {
 
