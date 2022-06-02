@@ -29,19 +29,19 @@ public class CustomAuthenticationManager implements AuthenticationManager {
         String password = authentication.getCredentials().toString();
         EntityManager em= EntityManagerProvider.getInstance().getEntityManager();
         try {
-
             em.getTransaction().begin();
             User u=repository.findByUsernameAndPassword(name, password);
             em.getTransaction().commit();
+            if(u==null){
+                throw new Exception("Neispravno korisničko ime ili lozinka.");
+            }
             return new UsernamePasswordAuthenticationToken(
                     name, password, new ArrayList<>());
         } catch (Exception e) {
-            em.getTransaction().rollback();
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
         finally{
             em.close();
-            EntityManagerProvider.getInstance().closeSession();
         }
     }
 }

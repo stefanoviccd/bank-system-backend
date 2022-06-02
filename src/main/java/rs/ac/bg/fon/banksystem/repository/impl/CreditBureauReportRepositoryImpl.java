@@ -12,44 +12,32 @@ import java.util.Locale;
 @Repository
 public class CreditBureauReportRepositoryImpl implements CreditBureauReportRepository {
     @Override
-    public void addCreditBureauReport(CreditBureauReport report) {
-        EntityManager em= EntityManagerProvider.getInstance().getEntityManager();
+    public void addCreditBureauReport(CreditBureauReport report, EntityManager em) {
         for(int i=0; i<report.getLoans().size(); i++){
             em.persist(report.getLoans().get(i));
         }
 
-        try {
-            em.persist(report);
-        }
-        catch (Exception e){
-            System.out.println("NIJE MOGUCE SACUVATI IZVESTAJ.");
-           // em.getTransaction().rollback();
-            e.printStackTrace();
-        }
+        em.persist(report);
 
 
 
     }
 
     @Override
-    public List<CreditBureauReport> getAllReports() {
-        EntityManager em= EntityManagerProvider.getInstance().getEntityManager();
+    public List<CreditBureauReport> getAllReports(EntityManager em) {
         List<CreditBureauReport> reports=em.createQuery("select m from CreditBureauReport  m").getResultList();
         return reports;
 
     }
 
     @Override
-    public void deleteReport(Long reportId) {
-        EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
+    public void deleteReport(Long reportId, EntityManager em) {
         CreditBureauReport r=em.find(CreditBureauReport.class, reportId);
         em.remove(r);
     }
 
     @Override
-    public List<CreditBureauReport> getByValue(String value) {
-        System.out.println("VALUE: "+value);
-        EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
+    public List<CreditBureauReport> getByValue(String value, EntityManager em) {
         String searchingParameter="%"+value+"%";
 
        return em.createQuery("select m from CreditBureauReport m where m.bankName LIKE :value or m.reportNum LIKE :value or m.legalEntity.name LIKE :value").setParameter("value", searchingParameter)
@@ -58,14 +46,12 @@ public class CreditBureauReportRepositoryImpl implements CreditBureauReportRepos
     }
 
     @Override
-    public CreditBureauReport getReportById(Long id) {
-        EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
+    public CreditBureauReport getReportById(Long id, EntityManager em) {
         return em.find(CreditBureauReport.class, id);
     }
 
     @Override
-    public void update(CreditBureauReport report) {
-        EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
+    public void update(CreditBureauReport report, EntityManager em) {
         CreditBureauReport dbReport=em.find(CreditBureauReport.class, report.getId());
        for(int i=0; i<report.getLoans().size(); i++){
            if(report.getLoans().get(i).getId()!=null){
@@ -79,13 +65,11 @@ public class CreditBureauReportRepositoryImpl implements CreditBureauReportRepos
        }
 
         em.merge(report);
-       // return report;
+
     }
 
     @Override
-    public CreditBureauReport findByReportNumber(String reportNum) {
-        EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
-
+    public CreditBureauReport findByReportNumber(String reportNum, EntityManager em) {
         List<CreditBureauReport> dbReports=em.createQuery("select m from CreditBureauReport m where m.reportNum= :value").setParameter("value", reportNum)
                 .getResultList();
         return  dbReports.isEmpty() ? null : dbReports.get(0);
@@ -94,9 +78,7 @@ public class CreditBureauReportRepositoryImpl implements CreditBureauReportRepos
     }
 
     @Override
-    public void deleteByEntityId(Long id) {
-        System.out.println("ENTITY ID: "+id);
-        EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
+    public void deleteByEntityId(Long id, EntityManager em) {
        List<CreditBureauReport> entityReports=em.createQuery("SELECT m FROM CreditBureauReport m WHERE m.legalEntity.id= :id").setParameter("id", id).getResultList();
        if(entityReports!=null && !entityReports.isEmpty())
        for(int j=0;j<entityReports.size(); j++){

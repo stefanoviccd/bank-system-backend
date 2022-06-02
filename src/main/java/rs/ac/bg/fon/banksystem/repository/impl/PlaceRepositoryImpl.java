@@ -13,12 +13,7 @@ import javax.persistence.EntityManager;
 import java.util.List;
 @Repository
 public class PlaceRepositoryImpl implements PlaceRepository {
-    public Place findByName(String name){
-        SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
-        Session session = sessionFactory.openSession();
-        EntityManager em = session.getEntityManagerFactory().createEntityManager();
-        em.getTransaction().begin();
-
+    public Place findByName(String name, EntityManager em){
         List<Place> places =  em.createQuery("select m from Place m where m.name=: n").setParameter("n", name)
                 .getResultList();
         if(places.isEmpty())
@@ -26,8 +21,7 @@ public class PlaceRepositoryImpl implements PlaceRepository {
         return places.get(0);
     }
 
-    public void delete(Place place) {
-        EntityManager em= EntityManagerProvider.getInstance().getEntityManager();
+    public void delete(Place place, EntityManager em) {
         em.remove(place);
 
     }

@@ -5,7 +5,9 @@ import rs.ac.bg.fon.banksystem.exception.ValidationException;
 import rs.ac.bg.fon.banksystem.model.CreditBureauReport;
 import rs.ac.bg.fon.banksystem.model.LegalEntity;
 
+import javax.persistence.EntityManager;
+
 public interface CreditBureauReportValidator {
-    void validate(CreditBureauReport report) throws ValidationException;
+    void validate(CreditBureauReport report, EntityManager em) throws ValidationException;
 
 }

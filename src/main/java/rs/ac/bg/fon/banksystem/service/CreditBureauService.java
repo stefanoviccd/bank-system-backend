@@ -30,29 +30,20 @@ public class CreditBureauService {
     }
 
     public void addBureauReport(CreditBureauReport report) throws ValidationException {
-        if (report == null) {
-            throw new ValidationException("Report to be saved is null!!");
-        }
-        if (report.getReportNum() == null) {
-            throw new ValidationException("Report does not have report number!");
-        }
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
         em.getTransaction().begin();
         try {
-            addReportValidator.validate(report);
-            report.setLegalEntity(legalEntityRepository.getById(report.getLegalEntity().getId()));
-            repo.addCreditBureauReport(report);
+            addReportValidator.validate(report, em);
+            report.setLegalEntity(legalEntityRepository.getById(report.getLegalEntity().getId(), em));
+            repo.addCreditBureauReport(report, em);
             em.getTransaction().commit();
 
         } catch (Exception e) {
-            if (em.getTransaction().isActive())
                 em.getTransaction().rollback();
-            throw e;
+                throw e;
 
         } finally {
-            if (em.isOpen())
                 em.close();
-            EntityManagerProvider.getInstance().closeSession();
 
         }
 
@@ -65,19 +56,17 @@ public class CreditBureauService {
 
         try {
             em.getTransaction().begin();
-            dbReports = repo.getAllReports();
+            dbReports = repo.getAllReports(em);
             em.getTransaction().commit();
             return dbReports;
 
         } catch (Exception e) {
-            if (em.getTransaction().isActive())
                 em.getTransaction().rollback();
             e.printStackTrace();
             throw e;
 
         } finally {
             em.close();
-            EntityManagerProvider.getInstance().closeSession();
 
         }
 
@@ -88,18 +77,16 @@ public class CreditBureauService {
 
         try {
             em.getTransaction().begin();
-            repo.deleteReport(reportId);
+            repo.deleteReport(reportId, em);
             em.getTransaction().commit();
 
 
         } catch (Exception e) {
-            if (em.getTransaction().isActive())
                 em.getTransaction().rollback();
             throw e;
 
         } finally {
             em.close();
-            EntityManagerProvider.getInstance().closeSession();
 
         }
 
@@ -115,19 +102,20 @@ public class CreditBureauService {
         try {
             List<CreditBureauReport> dbReports;
             if (value.trim() == "") {
-                dbReports = repo.getAllReports();
+                dbReports = repo.getAllReports(em);
                 em.getTransaction().commit();
                 return dbReports;
             } else {
-                dbReports = repo.getByValue(value);
+                dbReports = repo.getByValue(value, em);
                 em.getTransaction().commit();
                 return dbReports;
             }
         } catch (Exception e) {
+            em.getTransaction().rollback();
             throw e;
         } finally {
             em.close();
-            EntityManagerProvider.getInstance().closeSession();
+            
         }
     }
 
@@ -136,44 +124,36 @@ public class CreditBureauService {
         em.getTransaction().begin();
         try {
 
-            CreditBureauReport dbReport = repo.getReportById(id);
+            CreditBureauReport dbReport = repo.getReportById(id, em);
             em.getTransaction().commit();
-            System.out.println(dbReport);
             return dbReport;
 
         } catch (
                 Exception e) {
-            //    if(em.getTransaction().isActive())
             em.getTransaction().rollback();
             throw e;
         } finally {
             em.close();
-            EntityManagerProvider.getInstance().closeSession();
+            
         }
 
     }
 
     public CreditBureauReport update(CreditBureauReport report) throws Exception {
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
-        if (report == null) {
-            throw new Exception("Report to be updated is null!");
-        }
-
         em.getTransaction().begin();
         try {
-            updateReportValidator.validate(report);
-            //   LegalEntity dbEntity=repo.getById(entity.getId());
-            repo.update(report);
+            updateReportValidator.validate(report, em);
+            repo.update(report, em);
             em.getTransaction().commit();
             return report;
         } catch (Exception e) {
-            if (em.getTransaction().isActive())
                 em.getTransaction().rollback();
             throw e;
 
         } finally {
             em.close();
-            EntityManagerProvider.getInstance().closeSession();
+            
         }
     }
 }

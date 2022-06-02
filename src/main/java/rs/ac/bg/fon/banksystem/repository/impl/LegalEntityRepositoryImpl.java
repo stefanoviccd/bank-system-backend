@@ -17,9 +17,7 @@ import java.util.List;
 @Repository
 public class LegalEntityRepositoryImpl implements LegalEntityRepository {
 
-    public LegalEntity save(LegalEntity legalEntity) {
-        EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
-
+    public LegalEntity save(LegalEntity legalEntity, EntityManager em) {
         List<Place> places = em.createQuery("select m from Place m where m.name=: name").setParameter("name", legalEntity.getStreet().getTownship().getPlace().getName())
                 .getResultList();
 
@@ -49,8 +47,7 @@ public class LegalEntityRepositoryImpl implements LegalEntityRepository {
         return legalEntity;
     }
 
-    public LegalEntity getById(Long id) {
-        EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
+    public LegalEntity getById(Long id, EntityManager em) {
         LegalEntity dbEntity = em.find(LegalEntity.class, id);
         if (dbEntity == null) {
             throw new ResourceNotFoundException("Entity with ID " + id + " does not exist!");
@@ -61,13 +58,11 @@ public class LegalEntityRepositoryImpl implements LegalEntityRepository {
 
     }
 
-    public LegalEntity update(LegalEntity updateEntity) {
-      EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
+    public LegalEntity update(LegalEntity updateEntity, EntityManager em) {
         LegalEntity dbEntity=em.find(LegalEntity.class, updateEntity.getId());
         List<Place> places= em.createQuery("select m from Place m where m.name=: n").setParameter("n", updateEntity.getStreet().getTownship().getPlace().getName())
                 .getResultList();
         if(places==null || places.isEmpty()){}
-           // em.persist(updateEntity.getStreet().getTownship().getPlace());
         else{
             updateEntity.getStreet().getTownship().getPlace().setId(places.get(0).getId());
         }
@@ -84,8 +79,7 @@ public class LegalEntityRepositoryImpl implements LegalEntityRepository {
     }
 
 
-    public void delete(LegalEntity entity) {
-        EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
+    public void delete(LegalEntity entity, EntityManager em) {
         LegalEntity dbEntity=em.find(LegalEntity.class, entity.getId());
         if(dbEntity!=null)
         em.remove(dbEntity);
@@ -93,20 +87,14 @@ public class LegalEntityRepositoryImpl implements LegalEntityRepository {
 
     }
 
-    public List<LegalEntity> findAll() {
-        EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
+    public List<LegalEntity> findAll(EntityManager em) {
         List<LegalEntity> entities = em.createQuery("select m from LegalEntity m")
                 .getResultList();
 
         return entities;
     }
 
-    public LegalEntity findByAccountNumber(String accountNumber) {
-        SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
-        Session session = sessionFactory.openSession();
-        EntityManager em = session.getEntityManagerFactory().createEntityManager();
-        em.getTransaction().begin();
-
+    public LegalEntity findByAccountNumber(String accountNumber, EntityManager em) {
         List<LegalEntity> entities = em.createQuery("select m from LegalEntity m where m.accountNumber=: accountNumber").setParameter("accountNumber", accountNumber)
                 .getResultList();
         if (entities.isEmpty())
@@ -115,12 +103,7 @@ public class LegalEntityRepositoryImpl implements LegalEntityRepository {
 
     }
 
-    public LegalEntity findByIdentification(String identificationNumber) {
-        SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
-        Session session = sessionFactory.openSession();
-        EntityManager em = session.getEntityManagerFactory().createEntityManager();
-        em.getTransaction().begin();
-
+    public LegalEntity findByIdentification(String identificationNumber, EntityManager em) {
         List<LegalEntity> entities = em.createQuery("select m from LegalEntity m where m.identificationNumber=: in").setParameter("in", identificationNumber)
                 .getResultList();
         if (entities.isEmpty())
@@ -129,8 +112,8 @@ public class LegalEntityRepositoryImpl implements LegalEntityRepository {
 
     }
 
-    public List<LegalEntity> getByValue(String value) {
-        EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
+    public List<LegalEntity> getByValue(String value, EntityManager em) {
+
         String searchingParameter="%"+value+"%";
         List<LegalEntity> entities = em.createQuery("select m from LegalEntity m where m.identificationNumber LIKE :value or  m.accountNumber LIKE :value or  m.name LIKE :value").setParameter("value", searchingParameter)
                 .getResultList();

@@ -30,7 +30,6 @@ public class JWTFilter extends OncePerRequestFilter implements Filter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
             String token = request.getHeader("Authorization");
-            System.out.println("JWTFilter: Authorization: " + token);
         if (token==null || token.equals("null")) {
             filterChain.doFilter(request, response);
             return;

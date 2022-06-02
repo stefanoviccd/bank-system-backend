@@ -1,6 +1,6 @@
 package rs.ac.bg.fon.banksystem.service;
 
-import org.hibernate.boot.jaxb.hbm.internal.ExecuteUpdateResultCheckStyleConverter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,7 +35,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
         finally {
             em.close();
-            EntityManagerProvider.getInstance().closeSession();
         }
 
     }

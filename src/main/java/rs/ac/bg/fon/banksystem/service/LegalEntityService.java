@@ -35,34 +35,18 @@ public class LegalEntityService {
         em.getTransaction().begin();
 
         try {
-            if (entity == null) {
-                throw new Exception("Entity is null.");
-            }
-            if (entity.getStreet() == null) {
-                throw new Exception("Entity street is null.");
-            }
-            if (entity.getStreet().getTownship() == null) {
-                throw new Exception("Entity township is null.");
-            }
-            if (entity.getStreet().getTownship().getPlace() == null) {
-                throw new Exception("Entity place is null.");
-            }
-
-            addEntityValidator.validate(entity);
-            repo.save(entity);
+            addEntityValidator.validate(entity, em);
+            repo.save(entity, em);
             em.getTransaction().commit();
             return entity;
 
 
         } catch (Exception e) {
-        //    if (em.getTransaction().isActive())
                 em.getTransaction().rollback();
                 throw  e;
         }
        finally {
             em.close();
-            // session.close();
-            EntityManagerProvider.getInstance().closeSession();
 
         }
 
@@ -74,18 +58,17 @@ public class LegalEntityService {
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
         em.getTransaction().begin();
         try {
-            LegalEntity dbEntity = repo.getById(id);
+            LegalEntity dbEntity = repo.getById(id, em);
             em.getTransaction().commit();
             return dbEntity;
 
         } catch (Exception e) {
-            if (em.getTransaction().isActive())
                 em.getTransaction().rollback();
             throw e;
 
         } finally {
             em.close();
-            EntityManagerProvider.getInstance().closeSession();
+            
         }
 
 
@@ -95,56 +78,49 @@ public class LegalEntityService {
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
         em.getTransaction().begin();
         try {
-            deleteAllLegalEntityReports(entity);
+            deleteAllLegalEntityReports(entity, em);
             Long placeId = entity.getStreet().getTownship().getPlace().getId();
             Long townShipId = entity.getStreet().getTownship().getId();
-            repo.delete(entity);
-            List<Street> streets = streetRepository.findByTownshipId(townShipId);
+            repo.delete(entity, em);
+            List<Street> streets = streetRepository.findByTownshipId(townShipId, em);
             if (streets.isEmpty())
-                townShipRepository.delete(entity.getStreet().getTownship());
-            List<Township> townships = townShipRepository.findByPlaceId(placeId);
+                townShipRepository.delete(entity.getStreet().getTownship(), em);
+            List<Township> townships = townShipRepository.findByPlaceId(placeId, em);
             if (townships.isEmpty())
-                placeRepository.delete(entity.getStreet().getTownship().getPlace());
+                placeRepository.delete(entity.getStreet().getTownship().getPlace(), em);
             em.getTransaction().commit();
 
 
         } catch (Exception e) {
-            if (em.getTransaction().isActive())
                 em.getTransaction().rollback();
             throw e;
         } finally {
             em.close();
-            EntityManagerProvider.getInstance().closeSession();
+            
         }
 
     }
 
-    private void deleteAllLegalEntityReports(LegalEntity entity) {
-        cbRepository.deleteByEntityId(entity.getId());
+    private void deleteAllLegalEntityReports(LegalEntity entity, EntityManager em) {
+        cbRepository.deleteByEntityId(entity.getId(), em);
 
     }
 
     public LegalEntity update(LegalEntity entity) throws Exception {
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
-        if (entity == null) {
-            throw new Exception("Entity to be updated is null!");
-        }
-
         em.getTransaction().begin();
         try {
-            updateEntityValidator.validate(entity);
-            //   LegalEntity dbEntity=repo.getById(entity.getId());
-            repo.update(entity);
+            updateEntityValidator.validate(entity, em);
+            repo.update(entity, em);
             em.getTransaction().commit();
             return entity;
         } catch (Exception e) {
-            if (em.getTransaction().isActive())
                 em.getTransaction().rollback();
             throw e;
 
         } finally {
             em.close();
-            EntityManagerProvider.getInstance().closeSession();
+            
         }
     }
 
@@ -153,17 +129,16 @@ public class LegalEntityService {
         em.getTransaction().begin();
         try {
 
-            List<LegalEntity> entities = repo.findAll();
+            List<LegalEntity> entities = repo.findAll(em);
             em.getTransaction().commit();
             return entities;
         } catch (Exception e) {
-            if (em.getTransaction().isActive())
                 em.getTransaction().rollback();
             throw e;
 
         } finally {
             em.close();
-            EntityManagerProvider.getInstance().closeSession();
+            
         }
 
 
@@ -179,19 +154,20 @@ public class LegalEntityService {
         try {
             List<LegalEntity> dbEntities;
             if (value.trim() == "") {
-                dbEntities = repo.findAll();
+                dbEntities = repo.findAll(em);
                 em.getTransaction().commit();
                 return dbEntities;
             } else {
-                dbEntities = repo.getByValue(value);
+                dbEntities = repo.getByValue(value, em);
                 em.getTransaction().commit();
                 return dbEntities;
             }
         } catch (Exception e) {
+            em.getTransaction().rollback();
             throw e;
         } finally {
             em.close();
-            EntityManagerProvider.getInstance().closeSession();
+            
         }
 
 

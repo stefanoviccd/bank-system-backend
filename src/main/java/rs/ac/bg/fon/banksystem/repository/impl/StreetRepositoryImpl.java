@@ -13,9 +13,7 @@ import javax.persistence.EntityManager;
 import java.util.List;
 @Repository
 public class StreetRepositoryImpl implements StreetRepository {
-    public List<Street> findByTownshipId(Long townShipId) {
-        EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
-
+    public List<Street> findByTownshipId(Long townShipId, EntityManager em) {
         List<Street> streets = em.createQuery("select m from Street m where m.township.id=: id").setParameter("id", townShipId)
                 .getResultList();
         return streets;

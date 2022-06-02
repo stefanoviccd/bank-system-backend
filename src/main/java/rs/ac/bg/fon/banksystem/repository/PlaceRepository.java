@@ -4,9 +4,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import rs.ac.bg.fon.banksystem.model.Place;
 
+import javax.persistence.EntityManager;
+
 
 public interface PlaceRepository{
-    Place findByName(String name);
-    public void delete(Place place);
+    Place findByName(String name, EntityManager em);
+    public void delete(Place place, EntityManager em);
 
 }
