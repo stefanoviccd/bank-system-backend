@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.bg.fon.banksystem.communication.Response;
+import rs.ac.bg.fon.banksystem.exception.ValidationException;
 import rs.ac.bg.fon.banksystem.model.LegalEntity;
 import rs.ac.bg.fon.banksystem.service.LegalEntityService;
 
@@ -34,10 +35,11 @@ public class LegalEntityController {
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
 
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             response.setResponseData(null);
             response.setResponseException(ex);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
 
         }
     }
@@ -53,10 +55,16 @@ public class LegalEntityController {
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
 
-        } catch (Exception ex) {
+        }  catch (ValidationException ex) {
             response.setResponseData(null);
             response.setResponseException(ex);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+        }
+        catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
 
         }
     }
@@ -72,10 +80,11 @@ public class LegalEntityController {
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
 
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             response.setResponseData(null);
             response.setResponseException(ex);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
 
         }
 
@@ -92,10 +101,17 @@ public class LegalEntityController {
             LegalEntity updated=legalEntityService.update(entityDetails);
             response.setResponseData(updated);
             return ResponseEntity.ok().body(response);
-        } catch (Exception e) {
-            response.setResponseException(e);
+        } catch (ValidationException ex) {
             response.setResponseData(null);
-            return ResponseEntity.ok().body(response);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+        }
+        catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
+
         }
 
     }
@@ -111,10 +127,12 @@ public class LegalEntityController {
             legalEntityService.delete(entity);
             return ResponseEntity.ok().body(response);
 
-        } catch (Exception e) {
-            response.setResponseException(e);
+        }
+        catch (Exception ex) {
             response.setResponseData(null);
-            return ResponseEntity.ok().body(response);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
+
         }
 
 
@@ -135,7 +153,7 @@ public class LegalEntityController {
             response.setResponseData(new ArrayList() {
             });
             response.setResponseException(ex);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
 
         }
 

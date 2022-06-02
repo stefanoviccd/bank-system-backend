@@ -35,7 +35,7 @@ public class CustomAuthenticationManager implements AuthenticationManager {
             em.getTransaction().commit();
             return new UsernamePasswordAuthenticationToken(
                     name, password, new ArrayList<>());
-        } catch (UsernameNotFoundException e) {
+        } catch (Exception e) {
             em.getTransaction().rollback();
             throw new RuntimeException(e);
         }

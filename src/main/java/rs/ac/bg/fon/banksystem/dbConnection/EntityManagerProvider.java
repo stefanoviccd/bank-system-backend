@@ -34,8 +34,7 @@ public class EntityManagerProvider {
 
     }
     public void closeSession(){
-        if(session.isOpen())
-            session.close();
+
     }
 
 

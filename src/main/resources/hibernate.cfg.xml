@@ -25,6 +25,7 @@
         <mapping class="rs.ac.bg.fon.banksystem.model.Place" />
         <mapping class="rs.ac.bg.fon.banksystem.model.CreditBureauReport" />
         <mapping class="rs.ac.bg.fon.banksystem.model.Loan" />
+        <mapping class="rs.ac.bg.fon.banksystem.model.User" />
 
     </session-factory>
 </hibernate-configuration>

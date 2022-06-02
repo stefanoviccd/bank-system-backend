@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import rs.ac.bg.fon.banksystem.model.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository {
     User findByUsernameAndPassword(String username, String password);
     User findByUsername(String username);
 

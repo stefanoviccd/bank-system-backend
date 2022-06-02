@@ -1,5 +1,6 @@
 package rs.ac.bg.fon.banksystem.service;
 
+import org.hibernate.boot.jaxb.hbm.internal.ExecuteUpdateResultCheckStyleConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,9 +25,10 @@ public class CustomUserDetailsService implements UserDetailsService {
             em.getTransaction().begin();
         try {
             rs.ac.bg.fon.banksystem.model.User u=userRepository.findByUsername(username);
+            if(u==null) throw new Exception("Neispravno korisničko ime ili lozinka.");
             em.getTransaction().commit();
             return new User(u.getUsername(), u.getPassword(), new ArrayList<>());
-        } catch (UsernameNotFoundException e) {
+        } catch (Exception e) {
             em.getTransaction().rollback();
             throw new RuntimeException(e);
 

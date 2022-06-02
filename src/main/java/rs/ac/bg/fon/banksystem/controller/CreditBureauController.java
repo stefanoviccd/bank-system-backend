@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.bg.fon.banksystem.communication.Response;
+import rs.ac.bg.fon.banksystem.exception.ValidationException;
 import rs.ac.bg.fon.banksystem.model.CreditBureauReport;
 import rs.ac.bg.fon.banksystem.model.LegalEntity;
 import rs.ac.bg.fon.banksystem.service.CreditBureauService;
@@ -34,10 +35,17 @@ public class CreditBureauController {
             response.setResponseData(null);
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
-        } catch (Exception ex) {
+        }
+        catch (ValidationException ex) {
             response.setResponseData(null);
             response.setResponseException(ex);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+        }
+        catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
 
         }
 
@@ -53,10 +61,12 @@ public class CreditBureauController {
             response.setResponseData(reports);
             return ResponseEntity.ok().body(response);
 
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             response.setResponseData(null);
             response.setResponseException(ex);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
+
         }
     }
 
@@ -69,10 +79,12 @@ public class CreditBureauController {
             creditBureauService.deleteReport(reportId);
             return ResponseEntity.ok().body(response);
 
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             response.setResponseData(null);
             response.setResponseException(ex);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
+
         }
     }
 
@@ -84,10 +96,17 @@ public class CreditBureauController {
             List<CreditBureauReport> dbReports = creditBureauService.getByValue(searchValue);
             response.setResponseData(dbReports);
             return ResponseEntity.ok().body(response);
-        } catch (Exception e) {
-            response.setResponseData(new ArrayList<>());
-            response.setResponseException(e);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }  catch (ValidationException ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+        }
+        catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
+
         }
 
     }
@@ -99,10 +118,12 @@ public class CreditBureauController {
             CreditBureauReport report = creditBureauService.getById(id);
             response.setResponseData(report);
             return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (Exception e) {
+        }
+        catch (Exception ex) {
             response.setResponseData(null);
-            response.setResponseException(e);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
+
         }
 
     }
@@ -115,10 +136,17 @@ public class CreditBureauController {
             creditBureauService.update(reportDetails);
             response.setResponseData(reportDetails);
             return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (Exception e) {
+        }  catch (ValidationException ex) {
             response.setResponseData(null);
-            response.setResponseException(e);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+        }
+        catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
+
         }
 
 
