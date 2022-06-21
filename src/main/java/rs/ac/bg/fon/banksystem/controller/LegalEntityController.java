@@ -129,6 +129,7 @@ public class LegalEntityController {
 
         }
         catch (Exception ex) {
+            ex.printStackTrace();
             response.setResponseData(null);
             response.setResponseException(ex);
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);

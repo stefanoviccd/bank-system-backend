@@ -25,7 +25,7 @@ public class Street {
     @Column(name = "street_number")
     private int streetNumber;
     @ManyToOne(
-            cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE},
+            cascade = {CascadeType.MERGE, CascadeType.PERSIST},
             optional = false,
             fetch = FetchType.EAGER
 

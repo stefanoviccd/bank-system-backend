@@ -10,4 +10,6 @@ import java.util.List;
 
 public interface StreetRepository{
     List<Street> findByTownshipId(Long townShipId, EntityManager em);
+
+    void delete(Long id, EntityManager em);
 }

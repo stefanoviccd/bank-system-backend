@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface TownshipRepository{
     Township findByZipCode(Long zipCode, EntityManager em);
-    void delete(Township township, EntityManager em);
+    void delete(Long id, EntityManager em);
     List<Township> findByPlaceId(Long placeId, EntityManager em);
 }

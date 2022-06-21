@@ -9,6 +9,6 @@ import javax.persistence.EntityManager;
 
 public interface PlaceRepository{
     Place findByName(String name, EntityManager em);
-    public void delete(Place place, EntityManager em);
+    public void delete(Long id, EntityManager em);
 
 }

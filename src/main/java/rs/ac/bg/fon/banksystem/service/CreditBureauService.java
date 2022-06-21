@@ -16,16 +16,17 @@ import java.util.List;
 
 @Service
 public class CreditBureauService {
-    private final CreditBureauReportValidator addReportValidator;
-    private final CreditBureauReportValidator updateReportValidator;
+    @Autowired
+    private  CreditBureauAddValidator addReportValidator;
+
+    @Autowired
+    private CreditBureauUpdateValidator updateReportValidator;
     @Autowired
     private CreditBureauReportRepository repo;
     @Autowired
     private LegalEntityRepository legalEntityRepository;
 
     public CreditBureauService() {
-        addReportValidator = new CreditBureauAddValidator();
-        updateReportValidator = new CreditBureauUpdateValidator();
 
     }
 
@@ -94,7 +95,7 @@ public class CreditBureauService {
 
     public List<CreditBureauReport> getByValue(String value) throws ValidationException {
         if (value == null) {
-            throw new ValidationException("Searching value is null!");
+            throw new ValidationException("Vrednost za pretragu je null!");
         }
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
         em.getTransaction().begin();

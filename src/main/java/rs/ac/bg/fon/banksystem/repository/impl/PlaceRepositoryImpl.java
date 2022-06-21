@@ -21,7 +21,8 @@ public class PlaceRepositoryImpl implements PlaceRepository {
         return places.get(0);
     }
 
-    public void delete(Place place, EntityManager em) {
+    public void delete(Long id, EntityManager em) {
+        Place place=em.find(Place.class, id);
         em.remove(place);
 
     }

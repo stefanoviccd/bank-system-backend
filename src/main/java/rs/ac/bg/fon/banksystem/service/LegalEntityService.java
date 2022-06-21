@@ -16,8 +16,10 @@ import javax.persistence.EntityManager;
 import java.util.List;
 @Service
 public class LegalEntityService {
-    private final LegalEntityValidator addEntityValidator = new LegalEntityAddValidator();
-    private final LegalEntityValidator updateEntityValidator = new LegalEntityUpdateValidator();
+    @Autowired
+    private LegalEntityAddValidator addEntityValidator ;
+    @Autowired
+    private  LegalEntityUpdateValidator updateEntityValidator ;
     @Autowired
     private LegalEntityRepository repo;
     @Autowired
@@ -81,13 +83,15 @@ public class LegalEntityService {
             deleteAllLegalEntityReports(entity, em);
             Long placeId = entity.getStreet().getTownship().getPlace().getId();
             Long townShipId = entity.getStreet().getTownship().getId();
+            Long streetId = entity.getStreet().getId();
             repo.delete(entity, em);
+            streetRepository.delete(streetId, em);
             List<Street> streets = streetRepository.findByTownshipId(townShipId, em);
             if (streets.isEmpty())
-                townShipRepository.delete(entity.getStreet().getTownship(), em);
+                townShipRepository.delete(townShipId, em);
             List<Township> townships = townShipRepository.findByPlaceId(placeId, em);
             if (townships.isEmpty())
-                placeRepository.delete(entity.getStreet().getTownship().getPlace(), em);
+                placeRepository.delete(placeId, em);
             em.getTransaction().commit();
 
 
@@ -100,6 +104,7 @@ public class LegalEntityService {
         }
 
     }
+
 
     private void deleteAllLegalEntityReports(LegalEntity entity, EntityManager em) {
         cbRepository.deleteByEntityId(entity.getId(), em);
@@ -146,7 +151,7 @@ public class LegalEntityService {
 
     public List<LegalEntity> getByValue(String value) throws ValidationException {
         if (value == null) {
-            throw new ValidationException("Searching value is null!");
+            throw new ValidationException("Vrednost za pretragu je null!");
         }
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
         em.getTransaction().begin();

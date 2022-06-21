@@ -24,12 +24,7 @@ public class Place {
     @NotNull
     @Column(unique = true)
     private String name;
-    /*
-    @JsonIgnore
-    @OneToMany(
-            mappedBy = "place"
-    )
-    private List<Township> townships;*/
+
 
 
 }

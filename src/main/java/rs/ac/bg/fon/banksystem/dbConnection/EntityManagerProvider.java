@@ -16,6 +16,7 @@ public class EntityManagerProvider {
         session = sessionFactory.openSession();
 
 
+
     }
     public static EntityManagerProvider getInstance(){
         if(instance==null) instance=new EntityManagerProvider();
@@ -23,6 +24,7 @@ public class EntityManagerProvider {
     }
     public EntityManager getEntityManager(){
         em= session.getEntityManagerFactory().createEntityManager();
+
 
         return em;
 

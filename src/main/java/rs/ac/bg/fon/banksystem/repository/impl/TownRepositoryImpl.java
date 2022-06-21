@@ -22,7 +22,8 @@ public class TownRepositoryImpl implements TownshipRepository {
         return townships.get(0);
     }
 
-    public void delete(Township township, EntityManager em) {
+    public void delete(Long id, EntityManager em) {
+        Township township=em.find(Township.class, id);
         em.remove(township);
 
     }
